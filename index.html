@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Hangman</title>
+  </head>
+  <body>
+
+    <script>
+
+      var game = startNewGame("Chicken", 5); // This function down below just creates new hangman object and some console.log stuff
+
+      
+      // Hangman Object - this is the part I care about
+      function Hangman(word, guesses){
+
+        this.word = word.toLowerCase();
+        this.guesses = guesses;
+        this.guessed = new Array();
+        this.stateMsg = ["enter a letter to guess >>", "you win! (press any key to play again)", "you're dead, the crowd cheers. (press any key to play again)"];
+        
+        this.isValidGuess = function(letter){
+          return /[a-z]/.test(letter) && (this.guessed.indexOf(letter) > -1 ? false:true)
+        }
+
+        this.guess = function(letter){          
+          this.guessed.push(letter);
+          if(this.word.indexOf(letter) == -1) this.guesses--;
+        }
+
+        this.displayWord = function(){
+          var w = new String();
+          for(var i = 0; i < this.word.length; i++) {
+            this.guessed.indexOf(this.word[i]) > -1 ? w += this.word.charAt(i):w += "*";
+          }
+          return w;
+        }       
+
+        this.getGameState = function(){
+          return this.guesses > 0 ? (this.displayWord() != this.word ? 0:1):2; 
+        }
+
+        this.logToConsole = function(){
+          console.log("Word:", this.displayWord(), "| Trys:", this.guesses, "Guessed:", this.guessed);
+          console.log(this.stateMsg[this.getGameState()]);
+        }
+      }
+
+      // Event listener and startNewGame() function. Just threw this together, not really important.
+      document.onkeypress = function(event) {
+        if(game.getGameState() == 0){
+          var theKey = event.key.toLowerCase();
+          if(game.isValidGuess(theKey)){
+            game.guess(theKey);
+            game.logToConsole();
+          }
+        } else {
+          game = startNewGame("Chicken", 5);
+        }
+      }
+
+      function startNewGame(word, guesses){
+        console.log("=========");
+        console.log(" HANGMAN ");
+        console.log("=========");
+        var theGame = new Hangman("Chicken", 5); // It's always chicken for now
+        theGame.logToConsole();
+        return theGame;
+      }
+
+    </script>
+  </body>
+</html>
