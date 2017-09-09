@@ -1,4 +1,9 @@
-var game = startNewGame(); // This function down below just creates new hangman object and some console.log stuff 
+var scoreboard = {
+  wins: 0,
+  loses: 0
+};
+
+var game = startNewGame(); // creates new hangman object and some console.log stuff
 
 document.onkeypress = function(event) {
   if(game.getGameState() == 0){
@@ -9,6 +14,7 @@ document.onkeypress = function(event) {
       game.logToHTML();
     }
   } else {
+    game.getGameState() == 1 ? scoreboard.wins++:scoreboard.loses++;
     game = startNewGame();
   }
 }
@@ -16,7 +22,7 @@ document.onkeypress = function(event) {
 function startNewGame(){
   console.log("=========");
   console.log(" HANGMAN ");
-  console.log("=========");
+  console.log("=========");  
   var theGame = new Hangman(selectRandomWord(), 5);
   theGame.logToConsole();
   theGame.logToHTML();
@@ -67,5 +73,6 @@ function Hangman(word, guesses){ // Hangman Object
     document.getElementById("gameState").innerHTML = "HANGMAN - " + this.stateMsg[this.getGameState()];
     document.getElementById("word").innerHTML = this.displayWord("_", " ");
     document.getElementById("guessed").innerHTML = this.guessed;
+    document.getElementById("score").innerHTML = "wins: " + scoreboard.wins + ", loses: " + scoreboard.loses;
   }
 }
