@@ -6,10 +6,26 @@ document.onkeypress = function(event) {
     if(game.isValidGuess(theKey)){
       game.guess(theKey);
       game.logToConsole();
+      game.logToHTML();
     }
   } else {
     game = startNewGame();
   }
+}
+
+function startNewGame(){
+  console.log("=========");
+  console.log(" HANGMAN ");
+  console.log("=========");
+  var theGame = new Hangman(selectRandomWord(), 5);
+  theGame.logToConsole();
+  theGame.logToHTML();
+  return theGame;
+}
+
+function selectRandomWord(){
+  var words = ["Chicken", "Mongoose", "Jellyfish", "Squirrel", "Porcupine", "Alligator", "Pelican", "Beaver"];
+  return words[Math.floor(words.length * Math.random())];
 }     
 
 function Hangman(word, guesses){ // Hangman Object
@@ -29,34 +45,27 @@ function Hangman(word, guesses){ // Hangman Object
     if(this.word.indexOf(letter) == -1) this.guesses--;
   }
 
-  this.displayWord = function(){ //word as it has been revealed: Dog => D**, if 'D' in guessed[]
+  this.displayWord = function(blankChar, spacer){ //word as it has been revealed: Dog => D**, if 'D' in guessed[]
     var w = new String();
     for(var i = 0; i < this.word.length; i++) {
-      this.guessed.indexOf(this.word.charAt(i).toLowerCase()) > -1 ? w += this.word.charAt(i):w += "*"; 
+      this.guessed.indexOf(this.word.charAt(i).toLowerCase()) > -1 ? w += this.word.charAt(i) + spacer:w += blankChar + spacer; 
     }
     return w;
   }       
 
   this.getGameState = function(){ // 0 - player guessing, 1 - win, 2 - lose
-    return this.guesses > 0 ? (this.displayWord() != this.word ? 0:1):2; 
+    return this.guesses > 0 ? (this.displayWord("", "") != this.word ? 0:1):2; 
   }
 
   this.logToConsole = function(){
-    console.log("Word:", this.displayWord(), "| Trys:", this.guesses, "Guessed:", this.guessed);
+    console.log("Word:", this.displayWord("*", ""), "| Trys:", this.guesses, "Guessed:", this.guessed);
     console.log(this.stateMsg[this.getGameState()]);
   }
-}
 
-function startNewGame(){
-  console.log("=========");
-  console.log(" HANGMAN ");
-  console.log("=========");
-  var theGame = new Hangman(selectRandomWord(), 5);
-  theGame.logToConsole();
-  return theGame;
-}
-
-function selectRandomWord(){
-  var words = ["Chicken", "Mongoose", "Jellyfish", "Squirrel", "Porcupine", "Alligator", "Pelican", "Beaver"];
-  return words[Math.floor(words.length * Math.random())];
+  this.logToHTML = function(){
+    document.getElementById("gallows").src = "assets/img/hm-" + this.guesses + ".png";
+    document.getElementById("gameState").innerHTML = "HANGMAN - " + this.stateMsg[this.getGameState()];
+    document.getElementById("word").innerHTML = this.displayWord("_", " ");
+    document.getElementById("guessed").innerHTML = this.guessed;
+  }
 }
