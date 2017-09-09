@@ -42,7 +42,7 @@ function Hangman(word, guesses){ // Hangman Object
 
   this.guess = function(letter){ // Push the guess into guessed[] Array and reduce guesses if not in the word          
     this.guessed.push(letter);
-    if(this.word.indexOf(letter) == -1) this.guesses--;
+    if(this.word.toLowerCase().indexOf(letter) == -1) this.guesses--;
   }
 
   this.displayWord = function(blankChar, spacer){ //word as it has been revealed: Dog => D**, if 'D' in guessed[]
